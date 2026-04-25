@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URI_REAL;
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
@@ -8,7 +8,7 @@ declare global {
 
 export function getMongoClientPromise(): Promise<MongoClient> {
   if (!uri) {
-    throw new Error("MONGODB_URI is not configured. Add it to your environment variables.");
+    throw new Error("MONGODB_URI_REAL is not configured. Add it to your environment variables.");
   }
 
   if (!global._mongoClientPromise) {

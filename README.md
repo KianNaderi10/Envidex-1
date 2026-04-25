@@ -22,7 +22,7 @@ copy .env.example .env.local
 
 Set these values in `.env.local`:
 
-- `MONGODB_URI`: your own MongoDB instance connection string (Atlas or self-hosted)
+- `MONGODB_URI_REAL`: your own MongoDB instance connection string (Atlas or self-hosted)
 - `NEXTAUTH_URL`: `http://localhost:3000` for local dev
 - `NEXTAUTH_SECRET`: long random secret
 - `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` (optional, for Google OAuth)
