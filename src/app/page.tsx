@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import { Camera, Leaf, TrendingUp, Zap } from "lucide-react";
+import { useMemo } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { Camera, Leaf, LogIn, LogOut, TrendingUp, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { mockSpeciesDatabase } from "@/lib/mock-species";
 import { StatusBadge } from "@/components/status-badge";
@@ -16,6 +20,60 @@ const stats = [
 ];
 
 export default function HomePage() {
+  const { data: session, status } = useSession();
+
+  const username = useMemo(() => {
+    if (!session?.user?.name) {
+      return "Explorer";
+    }
+    return session.user.name.split(" ")[0];
+  }, [session?.user?.name]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4 py-10">
+        <Card className="w-full max-w-md border-border/50 bg-card/80 p-6 text-center shadow-2xl backdrop-blur-sm">
+          <p className="text-sm text-muted-foreground">Checking your session...</p>
+        </Card>
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4 py-10">
+        <Card className="w-full max-w-md border-border/50 bg-card/80 p-6 text-center shadow-2xl backdrop-blur-sm">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 border border-primary/20">
+            <LogIn className="h-6 w-6 text-primary" />
+          </div>
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Envidex</p>
+          <h1 className="mt-3 mx-auto max-w-[18ch] text-2xl sm:text-3xl font-bold leading-snug text-balance">
+            The Leading AI-Conservation Effort.
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Your species collection, scan history, and profile are hidden until you sign in.
+          </p>
+          <Link
+            href="/login"
+            className="mt-6 inline-flex items-center gap-2.5 rounded-2xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 active:scale-95 transition-transform"
+          >
+            <LogIn className="h-4 w-4" />
+            Log in
+          </Link>
+          <Link
+            href="/signup"
+            className="mt-3 inline-flex items-center gap-2.5 rounded-2xl border border-border/60 bg-card/60 px-6 py-3.5 text-sm font-semibold text-foreground active:scale-95 transition-transform"
+          >
+            Create account
+          </Link>
+          <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+            Connect your own MongoDB instance to store users and sessions.
+          </p>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero */}
@@ -32,6 +90,7 @@ export default function HomePage() {
             Discover &<br />
             <span className="text-primary">Protect</span> Earth
           </h1>
+          <p className="text-xs uppercase tracking-widest text-primary/80">Welcome back, {username}</p>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
             Identify any species with your camera. Learn their story. Join the mission to keep them alive.
           </p>
@@ -42,6 +101,14 @@ export default function HomePage() {
             <Camera className="h-4 w-4" />
             Scan a Species
           </Link>
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="mt-3 inline-flex items-center gap-2.5 rounded-2xl px-6 py-3.5 font-semibold text-sm border border-border/60 bg-card/60 text-foreground active:scale-95 transition-transform"
+          >
+            <LogOut className="h-4 w-4" />
+            Log out
+          </button>
         </div>
       </div>
 

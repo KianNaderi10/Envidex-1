@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { AppProviders } from "@/components/app-providers";
 import { BottomNav } from "@/components/bottom-nav";
 
 const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
@@ -28,12 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="antialiased min-h-screen bg-background text-foreground">
-        <TooltipProvider delay={300}>
+        <AppProviders>
           <div className="flex flex-col min-h-screen max-w-md mx-auto relative">
             <main className="flex-1 pb-20">{children}</main>
             <BottomNav />
           </div>
-        </TooltipProvider>
+        </AppProviders>
       </body>
     </html>
   );

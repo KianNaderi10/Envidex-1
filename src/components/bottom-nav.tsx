@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Camera, BookOpen, User, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -15,6 +16,11 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { status } = useSession();
+
+  if (pathname === "/login" || pathname === "/signup" || status !== "authenticated") {
+    return null;
+  }
 
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50">
