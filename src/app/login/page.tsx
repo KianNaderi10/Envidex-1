@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState, Suspense } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { LogIn } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { status } = useSession();
@@ -51,8 +51,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <Card className="w-full max-w-md border-border/50 bg-card/80 p-6 shadow-2xl backdrop-blur-sm">
+    <Card className="w-full max-w-md border-border/50 bg-card/80 p-6 shadow-2xl backdrop-blur-sm">
         <div className="mb-5 text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Envidex</p>
           <h1 className="mt-3 text-2xl font-bold">Log in to your account</h1>
@@ -119,6 +118,15 @@ export default function LoginPage() {
           </Link>
         </p>
       </Card>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <div className="flex min-h-screen items-center justify-center px-4 py-10">
+      <Suspense>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }

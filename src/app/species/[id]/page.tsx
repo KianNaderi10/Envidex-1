@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, Suspense } from "react";
 import { ArrowLeft, Plus, Check, Heart, AlertTriangle, Leaf, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -232,5 +232,9 @@ export default function SpeciesDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  return <SpeciesDetailContent id={id} />;
+  return (
+    <Suspense>
+      <SpeciesDetailContent id={id} />
+    </Suspense>
+  );
 }
