@@ -75,23 +75,33 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen items-center text-center">
       {/* Hero */}
-      <div className="relative overflow-hidden px-4 pt-12 pb-8">
+      <div className="relative w-full max-w-md overflow-hidden px-4 pt-12 pb-8">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,oklch(0.35_0.12_155/0.3),transparent_70%)]" />
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="h-8 w-8 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center">
-              <Leaf className="h-4 w-4 text-primary" />
+        <div className="relative flex flex-col items-center">
+          <div className="mb-3 flex w-full items-start justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center">
+                <Leaf className="h-4 w-4 text-primary" />
+              </div>
+              <span className="text-xs font-semibold text-primary uppercase tracking-widest">Envidex</span>
             </div>
-            <span className="text-xs font-semibold text-primary uppercase tracking-widest">Envidex</span>
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="inline-flex items-center gap-2 rounded-xl px-3 py-2 font-semibold text-xs border border-border/60 bg-card/60 text-foreground active:scale-95 transition-transform"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              Log out
+            </button>
           </div>
           <h1 className="text-4xl font-bold leading-tight mb-3">
             Discover &<br />
             <span className="text-primary">Protect</span> Earth
           </h1>
           <p className="text-xs uppercase tracking-widest text-primary/80">Welcome back, {username}</p>
-          <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mx-auto">
             Identify any species with your camera. Learn their story. Join the mission to keep them alive.
           </p>
           <Link
@@ -101,19 +111,11 @@ export default function HomePage() {
             <Camera className="h-4 w-4" />
             Scan a Species
           </Link>
-          <button
-            type="button"
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="mt-3 inline-flex items-center gap-2.5 rounded-2xl px-6 py-3.5 font-semibold text-sm border border-border/60 bg-card/60 text-foreground active:scale-95 transition-transform"
-          >
-            <LogOut className="h-4 w-4" />
-            Log out
-          </button>
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="px-4 pb-6">
+      <div className="w-full max-w-md px-4 pb-6">
         <div className="grid grid-cols-3 gap-2">
           {stats.map((stat) => (
             <Card key={stat.label} className="p-3 bg-card/60 border-border/50 text-center">
@@ -126,8 +128,8 @@ export default function HomePage() {
       </div>
 
       {/* Featured endangered species */}
-      <div className="px-4 pb-6">
-        <div className="flex items-center justify-between mb-3">
+      <div className="w-full max-w-md px-4 pb-6">
+        <div className="mb-3 flex flex-col items-center gap-1.5">
           <h2 className="text-base font-semibold">Need Urgent Help</h2>
           <Link href="/collection" className="text-xs text-primary">View all →</Link>
         </div>
@@ -162,9 +164,9 @@ export default function HomePage() {
       </div>
 
       {/* Gamification CTA */}
-      <div className="px-4 pb-8">
+      <div className="w-full max-w-md px-4 pb-8">
         <Card className="border-border/50 bg-gradient-to-br from-card to-primary/5 p-5">
-          <div className="flex items-start gap-3">
+          <div className="flex flex-col items-center gap-3 text-center">
             <div className="text-3xl">🏆</div>
             <div>
               <h3 className="font-semibold text-sm mb-1">Build your Field Guide</h3>

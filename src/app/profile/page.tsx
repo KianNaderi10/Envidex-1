@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useSession } from "next-auth/react";
 import { User, Award, Flame, Leaf, Star, Shield } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useEnvidexStore } from "@/lib/store";
@@ -54,7 +55,12 @@ const BADGES = [
 ];
 
 export default function ProfilePage() {
+  const { data: session } = useSession();
   const { collection } = useEnvidexStore();
+
+  const displayName = useMemo(() => {
+    return session?.user?.name?.trim() || "Explorer";
+  }, [session?.user?.name]);
 
   const stats = useMemo(() => {
     const speciesFound = collection.length;
@@ -89,7 +95,9 @@ export default function ProfilePage() {
             🧭
           </div>
           <div>
-            <h1 className="text-xl font-bold">Field Ranger</h1>
+            <h1 className="text-xl font-bold">
+              Welcome, Ranger <span className="text-primary">{displayName}</span>!
+            </h1>
             <p className="text-xs text-muted-foreground mt-0.5">Level {level} Explorer</p>
             <div className="flex items-center gap-1.5 mt-2">
               <Flame className="h-3.5 w-3.5 text-orange-400" />
