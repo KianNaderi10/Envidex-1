@@ -137,8 +137,14 @@ export default function CollectionPage() {
           </div>
           <div className="text-center">
             <p className="font-semibold text-sm mb-1">Nothing discovered yet</p>
-            <p className="text-xs text-muted-foreground">Scan animals and plants around you to fill your Field Guide</p>
+            <p className="text-xs text-muted-foreground">Identify animals and plants around you to fill your Field Guide</p>
           </div>
+          <Link
+            href="/live-feed"
+            className="flex items-center gap-2 rounded-2xl bg-primary text-primary-foreground py-3 px-6 font-semibold text-sm"
+          >
+            Start Identifying
+          </Link>
         </div>
       )}
 
