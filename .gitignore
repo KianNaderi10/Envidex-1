@@ -34,6 +34,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+.venv/
+animal_dataset/
+animal_split/
 # python
 .venv/
 venv/
