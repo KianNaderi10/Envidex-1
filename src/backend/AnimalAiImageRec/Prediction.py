@@ -1,7 +1,6 @@
 import io
-import os
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -23,7 +22,6 @@ PREDICTIONS_DIR.mkdir(parents=True, exist_ok=True)
 STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI()
-
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 model = None
@@ -31,16 +29,23 @@ class_names = []
 
 if MODEL_PATH.exists() and CLASS_NAMES_PATH.exists():
     model = tf.keras.models.load_model(str(MODEL_PATH))
-    with open(CLASS_NAMES_PATH, "r") as f:
+    with open(CLASS_NAMES_PATH, "r", encoding="utf-8") as f:
         class_names = json.load(f)
 else:
-    print(f"WARNING: Model files not found. Run AnimalAi.py to train the model first.")
+    print("WARNING: Model files not found. Run AnimalAi.py to train the model first.")
 
 SCIENTIFIC_NAMES = {
     "ochotona_princeps": "Ochotona princeps",
     "panthera_leo": "Panthera leo",
     "panthera_tigris": "Panthera tigris",
 }
+
+COMMON_NAMES = {
+    "ochotona_princeps": "American Pika",
+    "panthera_leo": "Lion",
+    "panthera_tigris": "Tiger",
+}
+
 
 def predict_pil_image(img: Image.Image):
     img = img.convert("RGB").resize(IMG_SIZE)
@@ -53,12 +58,17 @@ def predict_pil_image(img: Image.Image):
 
     label = class_names[pred_index]
     scientific_name = SCIENTIFIC_NAMES.get(label, label.replace("_", " ").title())
+    common_name = COMMON_NAMES.get(label, scientific_name.replace("_", " ").title())
 
     result = {
+        "detected_label": label,
+        "common_name_guess": common_name,
         "scientific_name": scientific_name,
         "confidence": round(confidence * 100, 2),
+        "detected_at": datetime.now(timezone.utc).isoformat(),
     }
     return result
+
 
 @app.get("/")
 def home():
@@ -67,20 +77,23 @@ def home():
         return FileResponse(str(index_file))
     return JSONResponse({"status": "ok", "message": "Prediction service is running"})
 
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     if model is None:
-        return JSONResponse({"error": "Model not loaded. Run AnimalAi.py to train first."}, status_code=503)
+        return JSONResponse(
+            {"error": "Model not loaded. Run AnimalAi.py to train first."},
+            status_code=503
+        )
+
     contents = await file.read()
     img = Image.open(io.BytesIO(contents))
 
     result = predict_pil_image(img)
 
-    filename = f"prediction.json"
-    output_path = PREDICTIONS_DIR / filename
-
-    with open(output_path, "w") as f:
-        json.dump(result, f, indent=4)
+    output_path = PREDICTIONS_DIR / "prediction.json"
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(result, f, indent=2)
 
     return JSONResponse({
         "result": result,
