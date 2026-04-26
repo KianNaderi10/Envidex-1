@@ -150,7 +150,7 @@ export default function HomePage() {
           </motion.h1>
 
           <motion.p variants={fadeUp} className="text-muted-foreground text-[15px] leading-relaxed max-w-[28ch] mb-10" style={{ fontFamily: "var(--font-dm-sans)" }}>
-            Point your camera at any animal or plant. Envidex identifies it, tells its story, and shows you how to help.
+            Point your camera at any mammal. Envidex identifies it, tells its story, and shows you how to help.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-col gap-3 max-w-xs">
@@ -184,7 +184,7 @@ export default function HomePage() {
           </motion.p>
           <div className="flex flex-col gap-3">
             {[
-              { step: "1", icon: "📷", title: "Take a photo", desc: "Point your camera at any animal or plant around you." },
+              { step: "1", icon: "📷", title: "Take a photo", desc: "Point your camera at any mammal around you." },
               { step: "2", icon: "🔍", title: "AI identifies it", desc: "Get the species name, conservation status, and key facts instantly." },
               { step: "3", icon: "🌍", title: "Learn & track", desc: "Build your personal field guide and see your conservation impact." },
             ].map((item) => (
