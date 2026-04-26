@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { LogOut, CheckCircle2 } from "lucide-react";
+import { Camera, LogOut, CheckCircle2 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { mockSpeciesDatabase } from "@/lib/mock-species";
 import { StatusBadge } from "@/components/status-badge";
