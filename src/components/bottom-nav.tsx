@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Camera, BookOpen, User, Home } from "lucide-react";
+import { Camera, BookOpen, User, Home, Radio } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 const navItems = [
   { href: "/", icon: Home, label: "Home" },
+  { href: "/live-feed", icon: Radio, label: "Live Feed" },
   { href: "/scan", icon: Camera, label: "Scan" },
   { href: "/collection", icon: BookOpen, label: "Field Guide" },
   { href: "/profile", icon: User, label: "Profile" },

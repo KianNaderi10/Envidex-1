@@ -5,6 +5,15 @@ import { useSession } from "next-auth/react";
 import { ArrowLeft, Check, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useEnvidexStore } from "@/lib/store";
+
+const AVATAR_EMOJIS = [
+  "🦁","🐯","🦊","🐺","🦝","🐻","🐼","🐨","🦘","🦙",
+  "🦒","🦓","🐘","🦏","🦬","🦌","🐇","🦔","🐿️","🦫",
+  "🦅","🦉","🦆","🐦","🦜","🐸","🐊","🐢","🦎","🐍",
+  "🐬","🦭","🦈","🐙","🐠","🦋","🐝","🌿","🌺","🍀",
+];
+
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -50,6 +59,7 @@ function FieldError({ message }: { message: string | null }) {
 export default function AccountSettingsPage() {
   const router = useRouter();
   const { data: session, update } = useSession();
+  const { avatarEmoji, setAvatarEmoji } = useEnvidexStore();
   const [hasPassword, setHasPassword] = useState<boolean | null>(null);
 
   // Name form
@@ -99,8 +109,8 @@ export default function AccountSettingsPage() {
       await update({ name: name.trim() });
       setNameSaved(true);
       setTimeout(() => setNameSaved(false), 2000);
-    } catch (err: any) {
-      setNameError(err.message);
+    } catch (err) {
+      setNameError(err instanceof Error ? err.message : "Failed to update");
     } finally {
       setNameSaving(false);
     }
@@ -123,8 +133,8 @@ export default function AccountSettingsPage() {
       setEmailPassword("");
       setEmailSaved(true);
       setTimeout(() => setEmailSaved(false), 2000);
-    } catch (err: any) {
-      setEmailError(err.message);
+    } catch (err) {
+      setEmailError(err instanceof Error ? err.message : "Failed to update");
     } finally {
       setEmailSaving(false);
     }
@@ -156,8 +166,8 @@ export default function AccountSettingsPage() {
       setConfirmPassword("");
       setPwSaved(true);
       setTimeout(() => setPwSaved(false), 2000);
-    } catch (err: any) {
-      setPwError(err.message);
+    } catch (err) {
+      setPwError(err instanceof Error ? err.message : "Failed to update");
     } finally {
       setPwSaving(false);
     }
@@ -189,7 +199,9 @@ export default function AccountSettingsPage() {
         {/* Avatar preview */}
         <motion.div variants={fadeUp} className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0">
-            {session?.user?.image ? (
+            {avatarEmoji ? (
+              <span className="text-3xl">{avatarEmoji}</span>
+            ) : session?.user?.image ? (
               <img src={session.user.image} alt={name} className="h-full w-full object-cover" />
             ) : (
               <span className="text-2xl font-black text-primary">
@@ -200,6 +212,39 @@ export default function AccountSettingsPage() {
           <div className="min-w-0">
             <p className="font-semibold text-sm truncate">{name || "Explorer"}</p>
             <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{session?.user?.email}</p>
+          </div>
+        </motion.div>
+
+        {/* Avatar emoji picker */}
+        <motion.div variants={fadeUp} className="flex flex-col gap-3">
+          <SectionLabel>Avatar</SectionLabel>
+          <div className="rounded-2xl border border-border/40 bg-card/40 p-3">
+            <div className="grid grid-cols-8 gap-1.5">
+              {AVATAR_EMOJIS.map((emoji) => (
+                <motion.button
+                  key={emoji}
+                  type="button"
+                  whileTap={{ scale: 0.85 }}
+                  onClick={() => setAvatarEmoji(avatarEmoji === emoji ? null : emoji)}
+                  className={`h-9 w-full rounded-xl flex items-center justify-center text-xl transition-colors ${
+                    avatarEmoji === emoji
+                      ? "bg-primary/20 ring-1 ring-primary/50"
+                      : "hover:bg-white/5"
+                  }`}
+                >
+                  {emoji}
+                </motion.button>
+              ))}
+            </div>
+            {avatarEmoji && (
+              <button
+                type="button"
+                onClick={() => setAvatarEmoji(null)}
+                className="mt-2 w-full text-[10px] text-muted-foreground hover:text-foreground transition-colors py-1"
+              >
+                Remove avatar
+              </button>
+            )}
           </div>
         </motion.div>
 

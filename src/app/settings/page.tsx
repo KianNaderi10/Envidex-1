@@ -2,9 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { useEnvidexStore } from "@/lib/store";
 import { ArrowLeft, LogOut, ChevronRight, User, Trash2, Info, FileText, Shield, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -65,6 +67,7 @@ function Row({
 export default function SettingsPage() {
   const router = useRouter();
   const { data: session } = useSession();
+  const { avatarEmoji } = useEnvidexStore();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -113,7 +116,11 @@ export default function SettingsPage() {
             label={session?.user?.name ?? "Explorer"}
             sublabel={session?.user?.email ?? ""}
             left={
-              session?.user?.image ? (
+              avatarEmoji ? (
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-lg">
+                  {avatarEmoji}
+                </div>
+              ) : session?.user?.image ? (
                 <img src={session.user.image} className="h-8 w-8 rounded-full object-cover" alt="" />
               ) : (
                 <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
@@ -154,6 +161,17 @@ export default function SettingsPage() {
             left={<MessageSquare className="h-4 w-4" />}
             onClick={() => window.open("mailto:feedback@envidex.app", "_blank")}
           />
+        </Section>
+
+        {/* Appearance */}
+        <Section title="Appearance">
+          <div className="flex items-center justify-between gap-3 px-4 py-3.5">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-foreground">Dark / Light mode</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Switch the app theme</p>
+            </div>
+            <ThemeToggle className="h-9 w-9 rounded-full border border-border/60 bg-card/60 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors" />
+          </div>
         </Section>
 
         {/* Account actions */}

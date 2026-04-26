@@ -3,3 +3,6 @@ uvicorn[standard]
 google-genai
 pydantic
 python-dotenv
+numpy
+tensorflow
+python-multipart

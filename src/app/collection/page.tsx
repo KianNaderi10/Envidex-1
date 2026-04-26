@@ -14,8 +14,51 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
+
+type SpeciesRecord = (typeof mockSpeciesDatabase)[number];
+
+function getHabitatEmoji(habitat: string) {
+  const h = habitat.toLowerCase();
+  if (h.includes("forest") || h.includes("rainforest")) return "🌲";
+  if (h.includes("ocean") || h.includes("marine") || h.includes("coastal")) return "🌊";
+  if (h.includes("desert")) return "🏜️";
+  if (h.includes("grass") || h.includes("meadow") || h.includes("field")) return "🌾";
+  if (h.includes("mountain") || h.includes("alpine") || h.includes("rocky")) return "⛰️";
+  return "🗺️";
+}
+
+function SpeciesVisual({
+  species,
+  sizeClass,
+  emojiClass,
+}: {
+  species: SpeciesRecord;
+  sizeClass: string;
+  emojiClass: string;
+}) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const imagePath = `/animal_images/${encodeURIComponent(species.commonName)}.jpg`;
+  const isAnimal = species.kingdom === "Animalia";
+
+  return (
+    <div
+      className={`rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0 ${sizeClass}`}
+    >
+      {isAnimal && !imageFailed ? (
+        <img
+          src={imagePath}
+          alt={species.commonName}
+          className="h-full w-full object-cover"
+          loading="lazy"
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <span className={emojiClass}>{isAnimal ? "🦁" : "🌿"}</span>
+      )}
+    </div>
+  );
+}
 
 export default function CollectionPage() {
   const { collection } = useEnvidexStore();
@@ -82,7 +125,7 @@ export default function CollectionPage() {
               transition={{ duration: 1.5 , ease: "easeOut" }}
             />
           </div>
-          <p className="text-[10px] text-muted-foreground mt-1.5">{completionPct}% complete</p>
+          <p className="text-[1px] text-muted-foreground mt-1.5">{completionPct}% complete</p>
         </Card>
       </div>
 
@@ -124,9 +167,7 @@ export default function CollectionPage() {
                 <Link href={`/species/${species!.id}`}>
                   <Card className="overflow-hidden border-border/50 bg-card/60 active:scale-[0.98] transition-transform">
                     <div className="flex items-center gap-3 p-3">
-                      <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-2xl shrink-0">
-                        {species!.kingdom === "Animalia" ? "🦁" : "🌿"}
-                      </div>
+                      <SpeciesVisual species={species!} sizeClass="h-14 w-14" emojiClass="text-2xl" />
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-sm truncate">{species!.commonName}</p>
                         <p className="text-[11px] text-muted-foreground italic truncate">{species!.scientificName}</p>
@@ -180,46 +221,53 @@ export default function CollectionPage() {
       <Dialog open={isExampleOpen} onOpenChange={setIsExampleOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              Example {exampleSpecies.kingdom === "Plantae" ? "Plant" : "Animal"} Profile
-            </DialogTitle>
             <DialogDescription>
-              Undiscovered entries stay hidden. This preview shows the type of details you unlock after scanning.
+              <i>This is a Preview</i>
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-2xl shrink-0">
-                {exampleSpecies.kingdom === "Animalia" ? "🦁" : "🌿"}
-              </div>
-              <div>
-                <p className="font-semibold text-sm">{exampleSpecies.commonName}</p>
+            <div className="space-y-2">
+              <Card className="p-1 bg-card/40 border-border/50">
+                <SpeciesVisual species={exampleSpecies} sizeClass="h-56 w-full" emojiClass="text-7xl" />
+              </Card>
+              <div className="text-center">
+                <p className="font-semibold text-xl">{exampleSpecies.commonName}</p>
                 <p className="text-xs text-muted-foreground italic">{exampleSpecies.scientificName}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <Card className="p-2 bg-card/50 border-border/50">
-                <p className="text-muted-foreground">Conservation</p>
-                <div className="mt-1">
+              <Card className="w-fit mx-auto px-2 py-3 bg-card/50 border-border/50 flex flex-col items-center text-center">
+                <p className="text-foreground">Conservation Status</p>
+                <div className="mt-1 flex justify-center">
                   <StatusBadge status={exampleSpecies.conservationStatus} size="sm" />
                 </div>
               </Card>
-              <Card className="p-2 bg-card/50 border-border/50">
-                <p className="text-muted-foreground">Population</p>
+              <Card className="w-fit mx-auto px-2 py-3 bg-card/50 border-border/50 flex flex-col items-center text-center">
+                <p className="font-medium text-foreground">Population</p>
                 <p className="font-medium mt-1">{exampleSpecies.population}</p>
               </Card>
             </div>
 
-            <Card className="p-3 bg-card/50 border-border/50">
-              <p className="text-xs text-muted-foreground mb-1">Habitat</p>
-              <p className="text-xs font-medium">{exampleSpecies.habitat.join(", ")}</p>
+            <Card className="p-1 bg-card/50 border-border/50">
+              <p className="text-sm font-semibold text-foreground text-center mb-1">Habitat</p>
+              <div className="grid grid-cols-2 gap-2">
+                {exampleSpecies.habitat.map((habitat) => (
+                  <div
+                    key={habitat}
+                    className="rounded-lg border border-border/60 bg-background/40 min-h-24 p-3 flex flex-col items-center justify-center text-center"
+                  >
+                    <span className="text-2xl leading-none">{getHabitatEmoji(habitat)}</span>
+                    <span className="text-sm font-semibold mt-1.5 leading-snug">{habitat}</span>
+                  </div>
+                ))}
+              </div>
             </Card>
 
-            <Card className="p-3 bg-card/50 border-border/50">
-              <p className="text-xs text-muted-foreground mb-1">About</p>
-              <p className="text-xs leading-relaxed">{exampleSpecies.description}</p>
+            <Card className="p-3 bg-card/50 border-border/50 text-center">
+              <p className="text-sm font-semibold text-foreground mb-1">About</p>
+              <p className="text-xs leading-relaxed text-center">{exampleSpecies.description}</p>
             </Card>
           </div>
         </DialogContent>

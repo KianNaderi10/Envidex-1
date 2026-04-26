@@ -220,7 +220,7 @@ export const mockSpeciesDatabase: Species[] = [
     kingdom: "Animalia",
     class: "Mammalia",
     habitat: ["Desert"],
-    conservationStatus: "Unknown",
+    conservationStatus: "DD",
     population: "Unknown",
     description: "A small ground squirrel native to arid regions of California.",
     threats: ["Habitat loss"],

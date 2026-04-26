@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Camera, Upload, Loader2, RotateCcw, Plus, Check } from "lucide-react";
+import { Camera, Upload, Loader2, RotateCcw, Plus, Check, Share2, Copy } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Card } from "@/components/ui/card";
@@ -39,8 +39,9 @@ export default function ScanPage() {
   const [result, setResult] = useState<IdentifyResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [displayConfidence, setDisplayConfidence] = useState(0);
+  const [shareState, setShareState] = useState<"idle" | "sharing" | "copied">("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addToCollection, isCollected } = useEnvidexStore();
+  const { addToCollection, isCollected, incrementShareCount } = useEnvidexStore();
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) return;
@@ -104,6 +105,33 @@ export default function ScanPage() {
     }, 16);
     return () => clearInterval(timer);
   }, [result]);
+
+  const handleShare = async () => {
+    if (!result || !imageData || shareState === "sharing") return;
+    setShareState("sharing");
+    try {
+      const res = await fetch("/api/scans", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageData, speciesData: result }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      const shareUrl = `${window.location.origin}/share/${data.shareId}`;
+      incrementShareCount();
+      if (navigator.share) {
+        await navigator.share({ title: result.commonName, text: `I found a ${result.commonName} with Envidex!`, url: shareUrl });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareState("copied");
+        setTimeout(() => setShareState("idle"), 2500);
+        return;
+      }
+    } catch {
+      // share cancelled or failed — reset silently
+    }
+    setShareState("idle");
+  };
 
   const handleCollect = () => {
     if (!result || collected) return;
@@ -356,16 +384,30 @@ export default function ScanPage() {
                         }`}
                       >
                         {collected ? (
-                          <>
-                            <Check className="h-3.5 w-3.5" /> Collected
-                          </>
+                          <><Check className="h-3.5 w-3.5" /> Collected</>
                         ) : (
-                          <>
-                            <Plus className="h-3.5 w-3.5" /> Add to Field Guide
-                          </>
+                          <><Plus className="h-3.5 w-3.5" /> Add to Field Guide</>
                         )}
                       </button>
                     </div>
+                    <motion.button
+                      onClick={handleShare}
+                      disabled={shareState === "sharing"}
+                      whileTap={{ scale: 0.97 }}
+                      className={`w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold border transition-colors ${
+                        shareState === "copied"
+                          ? "border-primary/30 bg-primary/10 text-primary"
+                          : "border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      }`}
+                    >
+                      {shareState === "sharing" ? (
+                        <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Generating link…</>
+                      ) : shareState === "copied" ? (
+                        <><Copy className="h-3.5 w-3.5" /> Link copied!</>
+                      ) : (
+                        <><Share2 className="h-3.5 w-3.5" /> Share this discovery</>
+                      )}
+                    </motion.button>
                   </div>
                 </Card>
                 </motion.div>
