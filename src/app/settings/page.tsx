@@ -5,6 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { ArrowLeft, LogOut, ChevronRight, User, Trash2, Info, FileText, Shield, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -154,6 +155,17 @@ export default function SettingsPage() {
             left={<MessageSquare className="h-4 w-4" />}
             onClick={() => window.open("mailto:feedback@envidex.app", "_blank")}
           />
+        </Section>
+
+        {/* Appearance */}
+        <Section title="Appearance">
+          <div className="flex items-center justify-between gap-3 px-4 py-3.5">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-foreground">Dark / Light mode</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Switch the app theme</p>
+            </div>
+            <ThemeToggle className="h-9 w-9 rounded-full border border-border/60 bg-card/60 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors" />
+          </div>
         </Section>
 
         {/* Account actions */}
