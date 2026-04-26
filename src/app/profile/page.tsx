@@ -883,16 +883,32 @@ export default function ProfilePage() {
       {/* Mission statement */}
       <div className="px-4 pb-8">
         <Card className="p-4 border-border/50 bg-gradient-to-br from-card to-primary/5">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">🌍</span>
-            <div>
-              <p className="font-semibold text-sm mb-1">Your Impact</p>
-              <p className="text-[11px] text-muted-foreground leading-relaxed">
-                Every species you discover spreads awareness. By learning about {stats.speciesFound} species, you&apos;ve
-                taken the first step toward protecting Earth&apos;s biodiversity.
-              </p>
-            </div>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xl">🌍</span>
+            <p className="font-semibold text-sm">Your Impact</p>
           </div>
+          {conservationBreakdown.length > 0 ? (
+            <>
+              <p className="text-[11px] text-muted-foreground leading-relaxed mb-3">
+                {stats.endangeredFound > 0
+                  ? `${stats.endangeredFound} of your ${stats.speciesFound} discoveries (${Math.round((stats.endangeredFound / stats.speciesFound) * 100)}%) are threatened species.`
+                  : `You've discovered ${stats.speciesFound} species — none threatened yet.`}
+              </p>
+              <div className="flex gap-1.5 flex-wrap">
+                {conservationBreakdown.map((c) => (
+                  <div key={c.status} className="flex items-center gap-1 rounded-full bg-card/60 border border-border/40 px-2 py-0.5">
+                    <span className={`h-1.5 w-1.5 rounded-full ${c.dot} shrink-0`} />
+                    <span className="text-[10px] font-semibold">{c.label}</span>
+                    <span className="text-[10px] text-muted-foreground">{c.count}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Start discovering species to see your conservation impact here.
+            </p>
+          )}
         </Card>
       </div>
     </div>
