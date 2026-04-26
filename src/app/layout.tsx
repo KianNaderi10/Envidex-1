@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fira_Code, Geist_Mono, Fraunces } from "next/font/google";
+import { Fira_Code, Geist_Mono, Fraunces, Finger_Paint, DM_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/app-providers";
 import { BottomNav } from "@/components/bottom-nav";
@@ -8,6 +8,9 @@ import { PageTransition } from "@/components/page-transition";
 const firaCode = Fira_Code({ subsets: ["latin"], variable: "--font-geist-sans", weight: ["300", "400", "500", "600", "700"] });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", axes: ["SOFT", "WONK"] });
+const fingerPaint = Finger_Paint({ subsets: ["latin"], variable: "--font-finger-paint", weight: "400" });
+const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
 
 export const metadata: Metadata = {
   title: "Envidex — Species Discovery",
@@ -28,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${firaCode.variable} ${geistMono.variable} ${fraunces.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${firaCode.variable} ${geistMono.variable} ${fraunces.variable} ${fingerPaint.variable} ${dmSans.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
