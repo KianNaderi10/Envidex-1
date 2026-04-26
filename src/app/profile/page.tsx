@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { Award, Flame, Cat, Star, Shield, Settings, Zap } from "lucide-react";
+import { sounds } from "@/lib/sounds";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
 import { useEnvidexStore } from "@/lib/store";
@@ -560,6 +561,12 @@ export default function ProfilePage() {
   const badges = [...baseBadges, ...metaBadges];
 
   const earnedCount = badges.filter((b) => b.earned).length;
+  const prevEarnedCount = useRef(earnedCount);
+  useEffect(() => {
+    if (earnedCount > prevEarnedCount.current) sounds.badgeUnlock();
+    prevEarnedCount.current = earnedCount;
+  }, [earnedCount]);
+
   const level = Math.floor(stats.speciesFound / 2) + 1;
   const xpForNext = (level * 2) - stats.speciesFound;
 

@@ -10,6 +10,7 @@ import { useEnvidexStore } from "@/lib/store";
 import type { ConservationStatus } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
+import { sounds } from "@/lib/sounds";
 
 type ScanState = "idle" | "preview" | "scanning" | "result" | "error";
 
@@ -93,9 +94,11 @@ export default function ScanPage() {
       }
       const data: IdentifyResult = await res.json();
       setResult(data);
+      sounds.scanComplete();
       setScanState("result");
     } catch (err) {
       if (err instanceof TypeError) setErrorType("network");
+      sounds.error();
       setScanState("error");
     }
   };
@@ -160,6 +163,7 @@ export default function ScanPage() {
   const handleCollect = () => {
     if (!result || collected) return;
     addToCollection({ speciesId: result.id, discoveredAt: new Date().toISOString() });
+    sounds.collect();
     confetti({
       particleCount: 80,
       spread: 70,
