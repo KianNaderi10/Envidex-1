@@ -12815,7 +12815,6 @@ export const mockSpeciesDatabase: Species[] = [
     ],
     range: "Various regions",
     diet: "Unknown",
-    collected: true,
   },
 
   {
