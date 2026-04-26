@@ -99,8 +99,8 @@ export default function AccountSettingsPage() {
       await update({ name: name.trim() });
       setNameSaved(true);
       setTimeout(() => setNameSaved(false), 2000);
-    } catch (err: any) {
-      setNameError(err.message);
+    } catch (err) {
+      setNameError(err instanceof Error ? err.message : "Failed to update");
     } finally {
       setNameSaving(false);
     }
@@ -123,8 +123,8 @@ export default function AccountSettingsPage() {
       setEmailPassword("");
       setEmailSaved(true);
       setTimeout(() => setEmailSaved(false), 2000);
-    } catch (err: any) {
-      setEmailError(err.message);
+    } catch (err) {
+      setEmailError(err instanceof Error ? err.message : "Failed to update");
     } finally {
       setEmailSaving(false);
     }
@@ -156,8 +156,8 @@ export default function AccountSettingsPage() {
       setConfirmPassword("");
       setPwSaved(true);
       setTimeout(() => setPwSaved(false), 2000);
-    } catch (err: any) {
-      setPwError(err.message);
+    } catch (err) {
+      setPwError(err instanceof Error ? err.message : "Failed to update");
     } finally {
       setPwSaving(false);
     }

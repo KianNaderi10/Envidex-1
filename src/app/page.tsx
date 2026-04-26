@@ -86,7 +86,7 @@ export default function HomePage() {
             className="text-5xl font-black leading-[1.05] tracking-tight mb-6"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            The world's<br />
+            The world&apos;s<br />
             wildlife,<br />
             <em className="not-italic text-primary">in your pocket.</em>
           </motion.h1>
