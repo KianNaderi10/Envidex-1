@@ -8,7 +8,6 @@ import { motion, type Variants } from "framer-motion";
 import { mockSpeciesDatabase } from "@/lib/mock-species";
 import { StatusBadge } from "@/components/status-badge";
 import { isThreatened } from "@/lib/conservation";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 const featuredSpecies = mockSpeciesDatabase.filter((s) =>
   isThreatened(s.conservationStatus)
@@ -61,7 +60,6 @@ export default function HomePage() {
             transition={{ duration: 0.4 }}
             className="flex items-center gap-3"
           >
-            <ThemeToggle className="text-muted-foreground hover:text-foreground transition-colors" />
             <Link href="/login" className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
               Sign in
             </Link>
@@ -152,7 +150,6 @@ export default function HomePage() {
           </h1>
         </div>
         <div className="flex items-center gap-2">
-          <ThemeToggle className="h-9 w-9 rounded-full border border-border/60 bg-card/60 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors" />
           <motion.button
             type="button"
             onClick={() => signOut({ callbackUrl: "/login" })}
