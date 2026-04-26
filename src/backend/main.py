@@ -111,3 +111,4 @@ Instructions:
         raise HTTPException(status_code=500, detail=f"Gemini request failed: {str(e)}")
     
 #http://127.0.0.1:8000/docs
+#uvicorn main:app --reload
