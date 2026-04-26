@@ -1,3 +1,5 @@
+Link to demo: https://www.loom.com/share/d56b2c04a149444997668ce4c9e575a3
+
 # Envidex
 
 Envidex is a mobile-first AI-powered species identification app. Point your camera at any mammal, and Envidex identifies it, shows its conservation status, tells its story, and lets you build a personal field guide of everything you discover.
