@@ -53,7 +53,7 @@ const BADGES: Badge[] = [
     id: "conservationist",
     name: "Conservationist",
     description: "Discover 3 endangered species",
-    icon: "🌿",
+    icon: "🦁",
     requirement: (s) => s.endangeredFound >= 3,
     progress: (s) => ({ current: s.endangeredFound, total: 3 }),
   },
@@ -117,7 +117,7 @@ const BADGES: Badge[] = [
     id: "botanist",
     name: "Botanist",
     description: "Discover a plant species",
-    icon: "🌱",
+    icon: "🦁",
     requirement: (s) => s.plantsFound >= 1,
     progress: (s) => ({ current: Math.min(s.plantsFound, 1), total: 1 }),
   },
@@ -702,7 +702,7 @@ export default function ProfilePage() {
                   <Link href={`/species/${sp.id}`}>
                     <div className="w-24 rounded-2xl border border-border/40 bg-card/60 p-3 flex flex-col items-center gap-2 active:scale-95 transition-transform">
                       <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-2xl">
-                        {sp.kingdom === "Animalia" ? "🦁" : "🌿"}
+                        {"🦁"}
                       </div>
                       <p className="text-[10px] font-semibold text-center leading-tight line-clamp-2 w-full">{sp.commonName}</p>
                       <StatusBadge status={sp.conservationStatus} size="sm" />

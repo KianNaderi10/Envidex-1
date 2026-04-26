@@ -31,7 +31,7 @@ const DAILY_POOL: ChallengeEntry[] = [
     compute: (today) => ({ current: today.length, total: 2 }) },
   { id: "d-threatened", title: "Danger Zone", description: "Find a threatened species today", icon: "⚠️",
     compute: (today) => ({ current: Math.min(today.filter(e => isThreatened(mockSpeciesDatabase.find(s => s.id === e.speciesId)?.conservationStatus ?? "LC")).length, 1), total: 1 }) },
-  { id: "d-plant", title: "Plant Hunter", description: "Discover a plant species today", icon: "🌱",
+  { id: "d-plant", title: "Plant Hunter", description: "Discover a plant species today", icon: "🦁",
     compute: (today) => ({ current: Math.min(today.filter(e => mockSpeciesDatabase.find(s => s.id === e.speciesId)?.kingdom === "Plantae").length, 1), total: 1 }) },
   { id: "d-lc", title: "Common Ground", description: "Discover a Least Concern species today", icon: "🟢",
     compute: (today) => ({ current: Math.min(today.filter(e => mockSpeciesDatabase.find(s => s.id === e.speciesId)?.conservationStatus === "LC").length, 1), total: 1 }) },
@@ -238,7 +238,7 @@ export default function HomePage() {
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
             >
-              🌿
+              🦁
             </motion.div>
             <div className="relative">
               <p className="text-xs text-primary/80 font-medium mb-1 uppercase tracking-wider">Tap to scan</p>
@@ -323,7 +323,7 @@ export default function HomePage() {
 
         {recentSpecies.length === 0 ? (
           <div className="rounded-2xl border border-border/40 bg-card/30 p-6 flex flex-col items-center text-center gap-2">
-            <span className="text-3xl">🌿</span>
+            <span className="text-3xl">🦁</span>
             <p className="text-sm font-semibold">Nothing discovered yet</p>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
               Scan your first species to start building your field guide
@@ -345,7 +345,7 @@ export default function HomePage() {
                   style={{ borderBottom: i < recentSpecies.length - 1 ? "1px solid oklch(1 0 0 / 6%)" : "none" }}
                 >
                   <div className="text-2xl w-9 text-center shrink-0 select-none">
-                    {species.kingdom === "Animalia" ? "🦁" : "🌿"}
+                    {"🦁"}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm leading-tight truncate">{species.commonName}</p>

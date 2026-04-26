@@ -61,7 +61,7 @@ function SpeciesDetailContent({ id }: { id: string }) {
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-8xl opacity-30">
-              {species.kingdom === "Animalia" ? "🦁" : "🌿"}
+              {"🦁"}
             </span>
           </div>
         )}
