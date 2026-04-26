@@ -1,0 +1,7 @@
+pandas
+requests
+pillow
+tensorflow
+tqdm
+scikit-learn
+numpy
