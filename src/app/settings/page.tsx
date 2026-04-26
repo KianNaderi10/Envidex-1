@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { useEnvidexStore } from "@/lib/store";
 import { ArrowLeft, LogOut, ChevronRight, User, Trash2, Info, FileText, Shield, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -65,6 +66,7 @@ function Row({
 export default function SettingsPage() {
   const router = useRouter();
   const { data: session } = useSession();
+  const { avatarEmoji } = useEnvidexStore();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -113,7 +115,11 @@ export default function SettingsPage() {
             label={session?.user?.name ?? "Explorer"}
             sublabel={session?.user?.email ?? ""}
             left={
-              session?.user?.image ? (
+              avatarEmoji ? (
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-lg">
+                  {avatarEmoji}
+                </div>
+              ) : session?.user?.image ? (
                 <img src={session.user.image} className="h-8 w-8 rounded-full object-cover" alt="" />
               ) : (
                 <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
