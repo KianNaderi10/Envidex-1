@@ -82,7 +82,7 @@ function SpeciesDetailContent({ id }: { id: string }) {
           <Card className="p-4 border-border/50 bg-card/90 backdrop-blur-md">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div>
-                <h1 className="text-xl font-bold leading-tight">{species.commonName}</h1>
+                <h1 className="text-xl font-bold leading-tight" style={{ fontFamily: "var(--font-display)" }}>{species.commonName}</h1>
                 <p className="text-xs text-muted-foreground italic mt-0.5">{species.scientificName}</p>
               </div>
               <StatusBadge status={species.conservationStatus} />
