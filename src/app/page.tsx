@@ -339,6 +339,28 @@ export default function HomePage() {
         )}
       </motion.div>
 
+      {/* Donate */}
+      <motion.div variants={fadeUp} className="px-5 mb-4">
+        <div className="relative rounded-2xl bg-gradient-to-br from-emerald-950/40 via-card to-card p-4 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.55_0.18_155/0.15),transparent_65%)] pointer-events-none" />
+          <div className="relative flex items-center gap-3">
+            <span className="text-2xl shrink-0">🐾</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm">Support Conservation</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">Every species you discover has a real-world counterpart that needs protecting. WWF works to preserve wildlife and habitats across the globe.</p>
+            </div>
+            <Link
+              href="https://support.wwf.org.uk/donate"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 rounded-xl bg-primary text-primary-foreground px-3 py-2 text-xs font-semibold"
+            >
+              Donate →
+            </Link>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Field guide nudge */}
       <motion.div variants={fadeUp} className="px-5 mt-6 pb-8">
         <motion.div
