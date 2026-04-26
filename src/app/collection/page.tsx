@@ -54,7 +54,7 @@ function SpeciesVisual({
           onError={() => setImageFailed(true)}
         />
       ) : (
-        <span className={emojiClass}>{isAnimal ? "🦁" : "🌿"}</span>
+        <span className={emojiClass}>{"🦁"}</span>
       )}
     </div>
   );

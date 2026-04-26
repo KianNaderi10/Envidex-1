@@ -154,7 +154,7 @@ export default async function SharePage({ params }: { params: Promise<{ shareId:
           href="/signup"
           className="flex items-center justify-center gap-2 rounded-2xl bg-primary text-primary-foreground py-4 font-semibold text-sm shadow-lg shadow-primary/20"
         >
-          🌿 Identify species with Envidex
+          🦁 Identify species with Envidex
         </Link>
       </div>
     </div>

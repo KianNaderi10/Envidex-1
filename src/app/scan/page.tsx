@@ -10,8 +10,19 @@ import { useEnvidexStore } from "@/lib/store";
 import type { ConservationStatus } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
+import { sounds } from "@/lib/sounds";
 
 type ScanState = "idle" | "preview" | "scanning" | "result" | "error";
+
+const SCAN_MESSAGES = [
+  "Analyzing image...",
+  "Checking species features...",
+  "Cross-referencing database...",
+  "Identifying habitat markers...",
+  "Almost there...",
+];
+
+type ErrorType = "photo" | "network" | "ratelimit" | "server";
 
 interface IdentifyResult {
   id: string;
@@ -37,11 +48,12 @@ export default function ScanPage() {
   const [scanState, setScanState] = useState<ScanState>("idle");
   const [imageData, setImageData] = useState<string | null>(null);
   const [result, setResult] = useState<IdentifyResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [displayConfidence, setDisplayConfidence] = useState(0);
   const [shareState, setShareState] = useState<"idle" | "sharing" | "copied">("idle");
+  const [scanMessageIndex, setScanMessageIndex] = useState(0);
+  const [errorType, setErrorType] = useState<ErrorType>("photo");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addToCollection, isCollected, incrementShareCount } = useEnvidexStore();
+  const { addToCollection, isCollected, incrementShareCount, collection } = useEnvidexStore();
 
   const handleFile = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) return;
@@ -66,7 +78,6 @@ export default function ScanPage() {
   const handleIdentify = async () => {
     if (!imageData) return;
     setScanState("scanning");
-    setError(null);
 
     try {
       const res = await fetch("/api/identify", {
@@ -75,12 +86,19 @@ export default function ScanPage() {
         body: JSON.stringify({ imageData }),
       });
 
-      if (!res.ok) throw new Error("Identification failed");
+      if (!res.ok) {
+        if (res.status === 429) { setErrorType("ratelimit"); throw new Error(); }
+        if (res.status === 413) { setErrorType("photo"); throw new Error(); }
+        setErrorType("server");
+        throw new Error();
+      }
       const data: IdentifyResult = await res.json();
       setResult(data);
+      sounds.scanComplete();
       setScanState("result");
-    } catch {
-      setError("Could not identify the species. Please try a clearer photo.");
+    } catch (err) {
+      if (err instanceof TypeError) setErrorType("network");
+      sounds.error();
       setScanState("error");
     }
   };
@@ -89,10 +107,13 @@ export default function ScanPage() {
     setScanState("idle");
     setImageData(null);
     setResult(null);
-    setError(null);
   };
 
   const collected = result ? isCollected(result.id) : false;
+  const collectedEntry = result ? collection.find((e) => e.speciesId === result.id) : null;
+  const collectedDate = collectedEntry
+    ? new Date(collectedEntry.discoveredAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+    : null;
 
   useEffect(() => {
     if (!result) { setDisplayConfidence(0); return; }
@@ -105,6 +126,12 @@ export default function ScanPage() {
     }, 16);
     return () => clearInterval(timer);
   }, [result]);
+
+  useEffect(() => {
+    if (scanState !== "scanning") { setScanMessageIndex(0); return; }
+    const timer = setInterval(() => setScanMessageIndex((i) => (i + 1) % SCAN_MESSAGES.length), 1800);
+    return () => clearInterval(timer);
+  }, [scanState]);
 
   const handleShare = async () => {
     if (!result || !imageData || shareState === "sharing") return;
@@ -136,6 +163,7 @@ export default function ScanPage() {
   const handleCollect = () => {
     if (!result || collected) return;
     addToCollection({ speciesId: result.id, discoveredAt: new Date().toISOString() });
+    sounds.collect();
     confetti({
       particleCount: 80,
       spread: 70,
@@ -289,8 +317,19 @@ export default function ScanPage() {
               </div>
             )}
             <div className="text-center">
-              <p className="font-semibold text-sm">Analyzing image...</p>
-              <p className="text-xs text-muted-foreground mt-1">Consulting our species database</p>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={scanMessageIndex}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.3 }}
+                  className="font-semibold text-sm"
+                >
+                  {SCAN_MESSAGES[scanMessageIndex]}
+                </motion.p>
+              </AnimatePresence>
+              <p className="text-xs text-muted-foreground mt-1">This usually takes a few seconds</p>
             </div>
           </motion.div>
         )}
@@ -304,8 +343,23 @@ export default function ScanPage() {
             exit={{ opacity: 0 }}
             className="px-4 flex-1 flex flex-col items-center justify-center gap-4"
           >
-            <div className="text-5xl">😕</div>
-            <p className="text-center text-sm text-muted-foreground">{error}</p>
+            <div className="text-5xl">
+              {errorType === "network" ? "📡" : errorType === "ratelimit" ? "⏳" : errorType === "server" ? "🛠️" : "📷"}
+            </div>
+            <div className="text-center">
+              <p className="font-semibold text-sm mb-1">
+                {errorType === "network" && "No connection"}
+                {errorType === "ratelimit" && "Too many requests"}
+                {errorType === "server" && "Something went wrong"}
+                {errorType === "photo" && "Couldn't identify this one"}
+              </p>
+              <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
+                {errorType === "network" && "Check your internet connection and try again."}
+                {errorType === "ratelimit" && "You've hit the limit — wait a moment before scanning again."}
+                {errorType === "server" && "Our servers hit a snag. Give it a moment and try again."}
+                {errorType === "photo" && "Try a clearer photo with good lighting and the subject filling the frame."}
+              </p>
+            </div>
             <button
               onClick={reset}
               className="flex items-center gap-2 rounded-2xl bg-primary text-primary-foreground py-3 px-6 font-semibold text-sm"
@@ -377,16 +431,19 @@ export default function ScanPage() {
                       <button
                         onClick={handleCollect}
                         disabled={collected}
-                        className={`flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold transition-colors ${
+                        className={`flex-1 flex flex-col items-center justify-center rounded-xl py-2 text-xs font-semibold transition-colors ${
                           collected
                             ? "bg-primary/20 text-primary border border-primary/30"
                             : "bg-primary text-primary-foreground"
                         }`}
                       >
                         {collected ? (
-                          <><Check className="h-3.5 w-3.5" /> Collected</>
+                          <>
+                            <span className="flex items-center gap-1"><Check className="h-3.5 w-3.5" /> Collected</span>
+                            {collectedDate && <span className="text-[10px] font-normal opacity-70 mt-0.5">{collectedDate}</span>}
+                          </>
                         ) : (
-                          <><Plus className="h-3.5 w-3.5" /> Add to Field Guide</>
+                          <span className="flex items-center gap-1.5"><Plus className="h-3.5 w-3.5" /> Add to Field Guide</span>
                         )}
                       </button>
                     </div>

@@ -31,7 +31,7 @@ const DAILY_POOL: ChallengeEntry[] = [
     compute: (today) => ({ current: today.length, total: 2 }) },
   { id: "d-threatened", title: "Danger Zone", description: "Find a threatened species today", icon: "⚠️",
     compute: (today) => ({ current: Math.min(today.filter(e => isThreatened(mockSpeciesDatabase.find(s => s.id === e.speciesId)?.conservationStatus ?? "LC")).length, 1), total: 1 }) },
-  { id: "d-plant", title: "Plant Hunter", description: "Discover a plant species today", icon: "🌱",
+  { id: "d-plant", title: "Plant Hunter", description: "Discover a plant species today", icon: "🦁",
     compute: (today) => ({ current: Math.min(today.filter(e => mockSpeciesDatabase.find(s => s.id === e.speciesId)?.kingdom === "Plantae").length, 1), total: 1 }) },
   { id: "d-lc", title: "Common Ground", description: "Discover a Least Concern species today", icon: "🟢",
     compute: (today) => ({ current: Math.min(today.filter(e => mockSpeciesDatabase.find(s => s.id === e.speciesId)?.conservationStatus === "LC").length, 1), total: 1 }) },
@@ -119,6 +119,7 @@ export default function HomePage() {
             transition={{ duration: 0.4 }}
             className="flex items-center gap-3"
           >
+            <ThemeToggle className="text-muted-foreground hover:text-foreground transition-colors" />
             <Link href="/login" className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
               Sign in
             </Link>
@@ -171,24 +172,37 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
 
-        {/* Stats strip */}
+        {/* How it works */}
         <motion.div
           variants={stagger}
           initial="initial"
           animate="animate"
-          className="border-t border-border/40 px-6 py-6 grid grid-cols-3 gap-4"
+          className="px-6 pb-10"
         >
-          {[
-            { value: "8.7M", label: "species tracked" },
-            { value: "44k+", label: "endangered" },
-            { value: "free", label: "always" },
-          ].map((s) => (
-            <motion.div key={s.label} variants={fadeUp} className="text-center">
-              <div className="text-xl font-black text-foreground">{s.value}</div>
-              <div className="text-[10px] text-muted-foreground mt-0.5">{s.label}</div>
-            </motion.div>
-          ))}
+          <motion.p variants={fadeUp} className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70 mb-4">
+            How it works
+          </motion.p>
+          <div className="flex flex-col gap-3">
+            {[
+              { step: "1", icon: "📷", title: "Take a photo", desc: "Point your camera at any animal or plant around you." },
+              { step: "2", icon: "🔍", title: "AI identifies it", desc: "Get the species name, conservation status, and key facts instantly." },
+              { step: "3", icon: "🌍", title: "Learn & track", desc: "Build your personal field guide and see your conservation impact." },
+            ].map((item) => (
+              <motion.div
+                key={item.step}
+                variants={fadeUp}
+                className="flex items-start gap-4 rounded-2xl border border-border/40 bg-card/40 px-4 py-3.5"
+              >
+                <span className="text-xl mt-0.5 shrink-0">{item.icon}</span>
+                <div>
+                  <p className="text-sm font-semibold leading-snug">{item.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
+
       </div>
     );
   }
@@ -209,6 +223,7 @@ export default function HomePage() {
           </h1>
         </div>
         <div className="flex items-center gap-2">
+          <ThemeToggle className="h-9 w-9 rounded-full border border-border/60 bg-card/60 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors" />
           <motion.button
             type="button"
             onClick={() => signOut({ callbackUrl: "/login" })}
@@ -323,7 +338,7 @@ export default function HomePage() {
 
         {recentSpecies.length === 0 ? (
           <div className="rounded-2xl border border-border/40 bg-card/30 p-6 flex flex-col items-center text-center gap-2">
-            <span className="text-3xl">🌿</span>
+            <span className="text-3xl">🦁</span>
             <p className="text-sm font-semibold">Nothing discovered yet</p>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
               Scan your first species to start building your field guide
@@ -345,7 +360,7 @@ export default function HomePage() {
                   style={{ borderBottom: i < recentSpecies.length - 1 ? "1px solid oklch(1 0 0 / 6%)" : "none" }}
                 >
                   <div className="text-2xl w-9 text-center shrink-0 select-none">
-                    {species.kingdom === "Animalia" ? "🦁" : "🌿"}
+                    {"🦁"}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm leading-tight truncate">{species.commonName}</p>
