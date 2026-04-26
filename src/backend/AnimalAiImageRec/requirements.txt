@@ -5,3 +5,5 @@ tensorflow
 tqdm
 scikit-learn
 numpy
+fastapi
+python-multipart

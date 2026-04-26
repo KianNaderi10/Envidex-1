@@ -61,7 +61,7 @@ async def predict(file: UploadFile = File(...)):
 
     result = predict_pil_image(img)
 
-    filename = f"prediction_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}.json"
+    filename = "prediction.json"
     output_path = os.path.join(PREDICTIONS_DIR, filename)
 
     with open(output_path, "w") as f:
