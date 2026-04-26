@@ -137,7 +137,7 @@ export default function CollectionPage() {
           </div>
           <div className="text-center">
             <p className="font-semibold text-sm mb-1">Nothing discovered yet</p>
-            <p className="text-xs text-muted-foreground">Identify animals and plants around you to fill your Field Guide</p>
+            <p className="text-xs text-muted-foreground">Identify mammals around you to fill your Field Guide</p>
           </div>
           <Link
             href="/live-feed"

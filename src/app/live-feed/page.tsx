@@ -272,7 +272,7 @@ export default function LiveFeedPage() {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50 px-4 pb-28"
+            className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50 px-4 pb-28 max-h-[80vh] overflow-y-auto"
           >
             {scanState === "error" && (
               <Card className="p-5 border-border/50 bg-card/95 backdrop-blur-xl">
