@@ -990,7 +990,7 @@ export const mockSpeciesDatabase: Species[] = [
   funFacts: ["One of the smallest foxes in North America"],
   range: "California Channel Islands",
   diet: "Insects, fruit, small animals",
-}
+},
   {
     id: "acerodon-celebensis",
     commonName: "Acerodon celebensis",
