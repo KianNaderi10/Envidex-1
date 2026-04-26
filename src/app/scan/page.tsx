@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Camera, Upload, Loader2, RotateCcw, Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
 import { useEnvidexStore } from "@/lib/store";
@@ -37,6 +38,7 @@ export default function ScanPage() {
   const [imageData, setImageData] = useState<string | null>(null);
   const [result, setResult] = useState<IdentifyResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [displayConfidence, setDisplayConfidence] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addToCollection, isCollected } = useEnvidexStore();
 
@@ -82,14 +84,6 @@ export default function ScanPage() {
     }
   };
 
-  const handleCollect = () => {
-    if (!result) return;
-    addToCollection({
-      speciesId: result.id,
-      discoveredAt: new Date().toISOString(),
-    });
-  };
-
   const reset = () => {
     setScanState("idle");
     setImageData(null);
@@ -98,6 +92,29 @@ export default function ScanPage() {
   };
 
   const collected = result ? isCollected(result.id) : false;
+
+  useEffect(() => {
+    if (!result) { setDisplayConfidence(0); return; }
+    const target = Math.round(result.confidence * 100);
+    let current = 0;
+    const timer = setInterval(() => {
+      current = Math.min(current + 3, target);
+      setDisplayConfidence(current);
+      if (current >= target) clearInterval(timer);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [result]);
+
+  const handleCollect = () => {
+    if (!result || collected) return;
+    addToCollection({ speciesId: result.id, discoveredAt: new Date().toISOString() });
+    confetti({
+      particleCount: 80,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ["#4ade80", "#22c55e", "#16a34a", "#bbf7d0", "#ffffff"],
+    });
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -129,11 +146,15 @@ export default function ScanPage() {
             />
 
             {/* Drop zone */}
-            <div
+            <motion.div
               onDrop={handleDrop}
               onDragOver={(e) => e.preventDefault()}
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-primary/30 rounded-3xl p-10 flex flex-col items-center justify-center gap-4 cursor-pointer hover:border-primary/60 hover:bg-primary/5 transition-colors min-h-64"
+              className="border-2 border-dashed border-primary/30 rounded-3xl p-10 flex flex-col items-center justify-center gap-4 cursor-pointer min-h-64"
+              animate={{ boxShadow: ["0 0 0 0px oklch(0.62 0.17 155 / 0)", "0 0 16px 4px oklch(0.62 0.17 155 / 0.15)", "0 0 0 0px oklch(0.62 0.17 155 / 0)"] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              whileHover={{ scale: 1.02, borderColor: "oklch(0.62 0.17 155 / 0.6)", backgroundColor: "oklch(0.62 0.17 155 / 0.05)" }}
+              whileTap={{ scale: 0.98 }}
             >
               <div className="h-16 w-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center float-animation">
                 <Camera className="h-8 w-8 text-primary" />
@@ -144,7 +165,7 @@ export default function ScanPage() {
                   Point your camera at any animal or plant
                 </p>
               </div>
-            </div>
+            </motion.div>
 
             <div className="mt-4 flex gap-3">
               <button
@@ -286,6 +307,12 @@ export default function ScanPage() {
             ) : (
               <>
                 {/* Species card */}
+                <div style={{ perspective: 1000 }}>
+                <motion.div
+                  initial={{ rotateY: 90, opacity: 0 }}
+                  animate={{ rotateY: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 80, damping: 14, delay: 0.05 }}
+                >
                 <Card className="border-border/50 bg-card/80 overflow-hidden">
                   {imageData && (
                     <div className="relative h-48 w-full">
@@ -301,7 +328,14 @@ export default function ScanPage() {
                     <div className="flex items-center justify-between">
                       <StatusBadge status={result.conservationStatus} />
                       <span className="text-xs text-muted-foreground">
-                        {Math.round(result.confidence * 100)}% confidence
+                        <motion.span
+                          key={result.id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                        >
+                          {displayConfidence}%
+                        </motion.span>
+                        {" "}confidence
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">{result.description}</p>
@@ -334,6 +368,8 @@ export default function ScanPage() {
                     </div>
                   </div>
                 </Card>
+                </motion.div>
+                </div>
 
                 {/* Fun facts */}
                 {result.funFacts.length > 0 && (
