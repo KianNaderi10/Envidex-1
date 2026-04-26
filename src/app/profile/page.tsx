@@ -4,6 +4,7 @@ import { useMemo, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Award, Flame, Leaf, Star, Shield, Settings, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { StatusBadge } from "@/components/status-badge";
 import { useEnvidexStore } from "@/lib/store";
 
 import { mockSpeciesDatabase } from "@/lib/mock-species";
