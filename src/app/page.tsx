@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { Camera, LogOut, CheckCircle2 } from "lucide-react";
+import { LogOut, CheckCircle2 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { mockSpeciesDatabase } from "@/lib/mock-species";
 import { StatusBadge } from "@/components/status-badge";
@@ -135,21 +135,21 @@ export default function HomePage() {
         >
           <div className="absolute inset-x-0 top-0 h-[60vh] bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,oklch(0.35_0.14_155/0.35),transparent)] pointer-events-none" />
 
-          <motion.p variants={fadeUp} className="text-sm text-primary/70 mb-4 font-medium">
+          <motion.p variants={fadeUp} className="text-sm text-primary/70 mb-4 font-medium" style={{ fontFamily: "var(--font-dm-sans)" }}>
             AI-powered species identification
           </motion.p>
 
           <motion.h1
             variants={fadeUp}
             className="text-5xl font-black leading-[1.05] tracking-tight mb-6"
-            style={{ fontFamily: "var(--font-display)" }}
+            style={{ fontFamily: "var(--font-finger-paint)" }}
           >
             The world&apos;s<br />
             wildlife,<br />
             <em className="not-italic text-primary">in your pocket.</em>
           </motion.h1>
 
-          <motion.p variants={fadeUp} className="text-muted-foreground text-[15px] leading-relaxed max-w-[28ch] mb-10">
+          <motion.p variants={fadeUp} className="text-muted-foreground text-[15px] leading-relaxed max-w-[28ch] mb-10" style={{ fontFamily: "var(--font-dm-sans)" }}>
             Point your camera at any animal or plant. Envidex identifies it, tells its story, and shows you how to help.
           </motion.p>
 
@@ -195,8 +195,8 @@ export default function HomePage() {
               >
                 <span className="text-xl mt-0.5 shrink-0">{item.icon}</span>
                 <div>
-                  <p className="text-sm font-semibold leading-snug">{item.title}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.desc}</p>
+                  <p className="text-sm font-semibold leading-snug" style={{ fontFamily: "var(--font-dm-sans)" }}>{item.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed" style={{ fontFamily: "var(--font-dm-sans)" }}>{item.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -236,41 +236,6 @@ export default function HomePage() {
         </div>
       </motion.div>
 
-      {/* Scan CTA */}
-      <motion.div variants={fadeUp} className="px-5 mb-8">
-        <motion.div
-          whileTap={{ scale: 0.97 }}
-          whileHover={{ scale: 1.01 }}
-          transition={{ type: "spring", stiffness: 350, damping: 22 }}
-        >
-          <Link
-            href="/scan"
-            className="relative flex flex-col justify-end overflow-hidden rounded-3xl bg-gradient-to-br from-primary/30 via-primary/10 to-transparent border border-primary/20 p-6 min-h-[160px]"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,oklch(0.45_0.18_155/0.4),transparent_60%)]" />
-            <motion.div
-              className="absolute top-5 right-5 text-5xl opacity-60 select-none"
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            >
-              🌿
-            </motion.div>
-            <div className="relative">
-              <p className="text-xs text-primary/80 font-medium mb-1 uppercase tracking-wider">Tap to scan</p>
-              <h2 className="text-2xl font-black leading-tight">Identify a<br />species now</h2>
-            </div>
-            <div className="absolute bottom-5 right-5">
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                className="h-10 w-10 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30"
-              >
-                <Camera className="h-5 w-5 text-primary-foreground" />
-              </motion.div>
-            </div>
-          </Link>
-        </motion.div>
-      </motion.div>
 
       {/* Challenges */}
       <motion.div variants={fadeUp} className="px-5 mb-6">
