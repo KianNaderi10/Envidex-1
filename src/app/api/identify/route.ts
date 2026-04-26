@@ -1,5 +1,5 @@
 import { generateText, Output } from "ai";
-import { gateway } from "@ai-sdk/gateway";
+import { anthropic } from "@ai-sdk/anthropic";
 import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, "");
 
     const result = await generateText({
-      model: gateway("anthropic/claude-sonnet-4.6"),
+      model: anthropic("claude-sonnet-4.6"),
       experimental_output: Output.object({ schema: SpeciesResultSchema }),
       messages: [
         {
