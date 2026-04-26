@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 
 # ===== CONFIG =====
-CSV_PATH = "src/backend/AnimalAiImageRec/TestSet.csv"
+CSV_PATH = "src/backend/AnimalAiImageRec/AnimalDataset.csv"
 OUTPUT_DIR = "animal_dataset"
 SPLIT_DIR = "animal_split"
 
@@ -24,7 +24,7 @@ VAL_DIR = os.path.join(SPLIT_DIR, "val")
 
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 32
-EPOCHS = 5
+EPOCHS = 8
 
 
 # ===== HELPERS =====
