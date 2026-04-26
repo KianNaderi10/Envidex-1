@@ -697,7 +697,6 @@ export const mockSpeciesDatabase: Species[] = [
     ],
     range: "Americas",
     diet: "Insects",
-    collected: true,
   },
   {
     id: "martes-caurina",

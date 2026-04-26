@@ -6,7 +6,6 @@ import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
 import { useEnvidexStore } from "@/lib/store";
 import { mockSpeciesDatabase, findSpeciesById } from "@/lib/mock-species";
-import { isThreatened } from "@/lib/conservation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
