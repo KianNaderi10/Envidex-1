@@ -1,7 +1,7 @@
 "use client";
 
 import { use, Suspense } from "react";
-import { ArrowLeft, Plus, Check, Heart, AlertTriangle, Leaf, Info } from "lucide-react";
+import { ArrowLeft, Plus, Check, Heart, AlertTriangle, Cat, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
@@ -61,7 +61,7 @@ function SpeciesDetailContent({ id }: { id: string }) {
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-8xl opacity-30">
-              {species.kingdom === "Animalia" ? "🦁" : "🌿"}
+              {"🦁"}
             </span>
           </div>
         )}
@@ -151,7 +151,7 @@ function SpeciesDetailContent({ id }: { id: string }) {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
           <Card className="p-4 border-border/50 bg-card/60">
             <div className="flex items-center gap-2 mb-3">
-              <Leaf className="h-4 w-4 text-primary" />
+              <Cat className="h-4 w-4 text-primary" />
               <h2 className="text-sm font-semibold">Habitat</h2>
             </div>
             <div className="flex flex-wrap gap-1.5">

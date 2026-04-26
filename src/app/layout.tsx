@@ -30,7 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${firaCode.variable} ${geistMono.variable} ${fraunces.variable}`} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.add('light');}catch(e){}` }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('theme')||'dark';var d=document.documentElement;d.classList.remove('light','dark');d.classList.add(t==='light'?'light':'dark');}catch(e){}`,
+          }}
+        />
       </head>
       <body className="antialiased min-h-screen bg-background text-foreground">
         <AppProviders>
