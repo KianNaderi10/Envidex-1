@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Award, Flame, Leaf, Star, Shield, Settings, Zap } from "lucide-react";
+import { Award, Flame, Cat, Star, Shield, Settings, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
 import { useEnvidexStore } from "@/lib/store";
@@ -666,7 +666,7 @@ export default function ProfilePage() {
       <div className="px-4 pb-5">
         <div className="grid grid-cols-2 gap-2">
           {[
-            { label: "Discovered", value: stats.speciesFound, icon: Leaf, color: "text-primary" },
+            { label: "Discovered", value: stats.speciesFound, icon: Cat, color: "text-primary" },
             { label: "Endangered", value: stats.endangeredFound, icon: Shield, color: "text-amber-400" },
             { label: "Badges", value: earnedCount, icon: Star, color: "text-yellow-400" },
             { label: "Rarity Score", value: stats.rarityScore, icon: Zap, color: "text-purple-400" },
