@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BookOpen, Search, Lock } from "lucide-react";
+import { BookOpen, Search, Lock, TreePine, Waves, Sun, Leaf, Mountain, Globe, PawPrint } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
 import { useEnvidexStore } from "@/lib/store";
@@ -18,14 +18,14 @@ import {
 
 type SpeciesRecord = (typeof mockSpeciesDatabase)[number];
 
-function getHabitatEmoji(habitat: string) {
+function getHabitatIcon(habitat: string) {
   const h = habitat.toLowerCase();
-  if (h.includes("forest") || h.includes("rainforest")) return "🌲";
-  if (h.includes("ocean") || h.includes("marine") || h.includes("coastal")) return "🌊";
-  if (h.includes("desert")) return "🏜️";
-  if (h.includes("grass") || h.includes("meadow") || h.includes("field")) return "🌾";
-  if (h.includes("mountain") || h.includes("alpine") || h.includes("rocky")) return "⛰️";
-  return "🗺️";
+  if (h.includes("forest") || h.includes("rainforest")) return TreePine;
+  if (h.includes("ocean") || h.includes("marine") || h.includes("coastal")) return Waves;
+  if (h.includes("desert")) return Sun;
+  if (h.includes("grass") || h.includes("meadow") || h.includes("field")) return Leaf;
+  if (h.includes("mountain") || h.includes("alpine") || h.includes("rocky")) return Mountain;
+  return Globe;
 }
 
 function SpeciesVisual({
@@ -54,7 +54,7 @@ function SpeciesVisual({
           onError={() => setImageFailed(true)}
         />
       ) : (
-        <span className={emojiClass}>{"🦁"}</span>
+        <PawPrint className={emojiClass} />
       )}
     </div>
   );
@@ -153,7 +153,7 @@ export default function CollectionPage() {
       {collectedSpecies.length > 0 && (
         <div className="px-4 pb-4">
           <h2 className="text-sm font-semibold mb-3">Discovered</h2>
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {collectedSpecies.map(({ species, entry }, i) => (
               <motion.div
                 key={entry.speciesId}
@@ -165,19 +165,60 @@ export default function CollectionPage() {
                 whileTap={{ scale: 0.985 }}
               >
                 <Link href={`/species/${species!.id}`}>
-                  <Card className="overflow-hidden border-border/50 bg-card/60 active:scale-[0.98] transition-transform">
-                    <div className="flex items-center gap-3 p-3">
-                      <SpeciesVisual species={species!} sizeClass="h-14 w-14" emojiClass="text-2xl" />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm truncate">{species!.commonName}</p>
-                        <p className="text-[11px] text-muted-foreground italic truncate">{species!.scientificName}</p>
+                  <Card className="overflow-hidden border-border/50 bg-card/60">
+                    {/* Image */}
+                    <SpeciesVisual species={species!} sizeClass="h-48 w-full rounded-none" emojiClass="h-16 w-16 text-muted-foreground/40" />
+
+                    <div className="p-3 space-y-2.5">
+                      {/* Name */}
+                      <div className="text-center">
+                        <p className="font-bold text-base">{species!.commonName}</p>
+                        <p className="text-[11px] text-muted-foreground italic">{species!.scientificName}</p>
                       </div>
-                      <div className="flex flex-col items-end gap-1 shrink-0">
-                        <StatusBadge status={species!.conservationStatus} size="sm" />
-                        {isThreatened(species!.conservationStatus) && (
-                          <span className="text-[9px] text-amber-400/80 font-medium">⚠ Threatened</span>
-                        )}
+
+                      {/* Status + Population */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <Card className="px-2 py-2.5 bg-card/50 border-border/50 flex flex-col items-center text-center gap-1">
+                          <p className="text-[10px] text-muted-foreground">Conservation Status</p>
+                          <StatusBadge status={species!.conservationStatus} size="sm" />
+                        </Card>
+                        <Card className="px-2 py-2.5 bg-card/50 border-border/50 flex flex-col items-center text-center gap-1">
+                          <p className="text-[10px] text-muted-foreground">Population</p>
+                          <p className="text-xs font-semibold leading-snug">{species!.population}</p>
+                        </Card>
                       </div>
+
+                      {/* Habitat */}
+                      {species!.habitat.length > 0 && (
+                        <Card className="p-2 bg-card/50 border-border/50">
+                          <p className="text-[10px] text-muted-foreground text-center mb-2">Habitat</p>
+                          <div className="grid grid-cols-2 gap-1.5">
+                            {species!.habitat.slice(0, 4).map((h) => {
+                              const Icon = getHabitatIcon(h);
+                              return (
+                                <div
+                                  key={h}
+                                  className="rounded-lg border border-border/60 bg-background/40 p-2 flex flex-col items-center justify-center text-center min-h-16"
+                                >
+                                  <Icon className="h-5 w-5 text-primary" />
+                                  <span className="text-[10px] font-medium mt-1 leading-snug">{h}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </Card>
+                      )}
+
+                      {/* Description */}
+                      <Card className="p-2.5 bg-card/50 border-border/50">
+                        <p className="text-[10px] text-muted-foreground text-center mb-1">About</p>
+                        <p className="text-xs leading-relaxed text-center line-clamp-3">{species!.description}</p>
+                      </Card>
+
+                      {/* Discovered date */}
+                      <p className="text-[10px] text-muted-foreground text-center">
+                        Discovered {new Date(entry.discoveredAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                      </p>
                     </div>
                   </Card>
                 </Link>
@@ -229,7 +270,7 @@ export default function CollectionPage() {
           <div className="space-y-3">
             <div className="space-y-2">
               <Card className="p-1 bg-card/40 border-border/50">
-                <SpeciesVisual species={exampleSpecies} sizeClass="h-56 w-full" emojiClass="text-7xl" />
+                <SpeciesVisual species={exampleSpecies} sizeClass="h-56 w-full" emojiClass="h-16 w-16 text-muted-foreground/40" />
               </Card>
               <div className="text-center">
                 <p className="font-semibold text-xl">{exampleSpecies.commonName}</p>
@@ -253,15 +294,18 @@ export default function CollectionPage() {
             <Card className="p-1 bg-card/50 border-border/50">
               <p className="text-sm font-semibold text-foreground text-center mb-1">Habitat</p>
               <div className="grid grid-cols-2 gap-2">
-                {exampleSpecies.habitat.map((habitat) => (
-                  <div
-                    key={habitat}
-                    className="rounded-lg border border-border/60 bg-background/40 min-h-24 p-3 flex flex-col items-center justify-center text-center"
-                  >
-                    <span className="text-2xl leading-none">{getHabitatEmoji(habitat)}</span>
-                    <span className="text-sm font-semibold mt-1.5 leading-snug">{habitat}</span>
-                  </div>
-                ))}
+                {exampleSpecies.habitat.map((habitat) => {
+                  const Icon = getHabitatIcon(habitat);
+                  return (
+                    <div
+                      key={habitat}
+                      className="rounded-lg border border-border/60 bg-background/40 min-h-24 p-3 flex flex-col items-center justify-center text-center"
+                    >
+                      <Icon className="h-6 w-6 text-primary" />
+                      <span className="text-sm font-semibold mt-1.5 leading-snug">{habitat}</span>
+                    </div>
+                  );
+                })}
               </div>
             </Card>
 
