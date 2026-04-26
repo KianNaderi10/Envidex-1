@@ -238,7 +238,7 @@ export default function HomePage() {
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
             >
-              🦁
+              🌿
             </motion.div>
             <div className="relative">
               <p className="text-xs text-primary/80 font-medium mb-1 uppercase tracking-wider">Tap to scan</p>
