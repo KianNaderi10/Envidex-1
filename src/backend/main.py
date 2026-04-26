@@ -48,9 +48,10 @@ class AnimalInfo(BaseModel):
 # This is safer than letting the model invent donation URLs.
 DONATION_LINKS = {
     "snow leopard": "https://snowleopard.org/",
+    "panthera uncia": "https://snowleopard.org/",
     "african elephant": "https://www.savetheelephants.org/",
+    "loxodonta africana": "https://www.savetheelephants.org/",
     "pangolin": "https://www.pangolincrisisfund.org/",
-    "sea otter": "https://www.seaotter.org/",
 }
 
 
@@ -71,19 +72,18 @@ def get_animal_info(payload: AnimalRequest):
     prompt = f"""
 You are helping a wildlife webapp.
 
-Given an animal detector output, return structured data.
+Return structured JSON for this detected animal.
 
-Detector output: {detected}
-Confidence: {payload.confidence}
-Scientific name: {payload.scientific_name}
+Detected animal: {scientific_name}
+Confidence: {confidence}
 
-Instructions:
-- Return the most likely common animal name.
-- Return the scientific name
-- Write a short factual description under 80 words.
-- Return a concise conservation/endangerment status.
-- donation_link must be null unless you are highly confident in an official or well-known conservation donation page.
-- If the detector output is uncertain, be conservative and reflect uncertainty briefly in the description.
+Rules:
+- common_name: human-friendly common name
+- scientific_name: correct scientific (binomial) name if known
+- description: 1 to 2 sentences, max 80 words
+- endangerment_status: concise conservation status
+- donation_link: null unless highly confident
+- do not invent facts or URLs
 """
 
     try:
