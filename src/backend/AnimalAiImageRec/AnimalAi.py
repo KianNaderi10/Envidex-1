@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 
 # ===== CONFIG =====
-CSV_PATH = "AnimalAiImageRec\TestSet.csv"
+CSV_PATH = "src/backend/AnimalAiImageRec/TestSet.csv"
 OUTPUT_DIR = "animal_dataset"
 SPLIT_DIR = "animal_split"
 
@@ -183,7 +183,7 @@ def main():
 	# Save model
 	model.save("animal_species_model.keras")
 
-	# 🔥 SAVE CLASS NAMES (THIS IS STEP 1)
+	# SAVE CLASS NAMES
 	with open("class_names.json", "w") as f:
 		json.dump(class_names, f)
 
